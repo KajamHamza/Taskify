@@ -1,11 +1,11 @@
 {
-    "name": "taskify",
-    "short_name": "taskify",
+    "name": "project",
+    "short_name": "project",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "on-demand loaction based service",
+    "description": "A new Flutter project.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

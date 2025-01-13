@@ -1,6 +1,6 @@
-# taskify
+# project
 
-on-demand loaction based service
+A new Flutter project.
 
 ## Getting Started
 
