@@ -1,5 +1,6 @@
 import 'package:Taskify/core/presentation/screens/chat/chat_list_screen.dart';
 import 'package:Taskify/core/presentation/screens/chat/chat_screen.dart';
+import 'package:Taskify/core/presentation/screens/client/requests/client_requests_screen.dart';
 import 'package:Taskify/core/presentation/screens/notifications/notifications_screen.dart';
 import 'package:flutter/material.dart';
 import '../presentation/screens/client/home/client_home_screen.dart';
@@ -31,6 +32,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const ChatListScreen());
       case '/notifications':
         return MaterialPageRoute(builder: (_) => const NotificationsScreen());
+      case '/client/request':
+        return MaterialPageRoute(builder: (_) => ClientRequestsScreen());
 
       default:
         return MaterialPageRoute(

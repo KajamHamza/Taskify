@@ -29,6 +29,7 @@ class _MapScreenContent extends StatelessWidget {
         children: [
           if (controller.currentLocation != null)
             GoogleMap(
+              key: ValueKey(controller.markers.length), // Rebuild when markers change
               initialCameraPosition: CameraPosition(
                 target: controller.currentLocation!,
                 zoom: 14,
@@ -38,14 +39,9 @@ class _MapScreenContent extends StatelessWidget {
               myLocationButtonEnabled: false,
               mapType: MapType.normal,
               zoomControlsEnabled: false,
-              onTap: (markerId) {
-                final service = controller.nearbyServices.firstWhere(
-                      (s) => s.id == markerId,
-                );
-                showModalBottomSheet(
-                  context: context,
-                  builder: (_) => ServicePreviewCard(service: service),
-                );
+              onTap: (_) {
+                // Clear the selected service when tapping on the map
+                controller.clearSelectedService();
               },
             )
           else
@@ -91,6 +87,14 @@ class _MapScreenContent extends StatelessWidget {
               ],
             ),
           ),
+          // Show the preview when a marker is tapped
+          if (controller.selectedService != null)
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: ServicePreviewCard(service: controller.selectedService!),
+            ),
         ],
       ),
     );

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum RequestStatus {
@@ -36,27 +38,33 @@ class ServiceRequestModel {
   });
 
   factory ServiceRequestModel.fromFirestore(DocumentSnapshot doc) {
-    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    return ServiceRequestModel(
-      id: doc.id,
-      serviceId: data['serviceId'],
-      clientId: data['clientId'],
-      providerId: data['providerId'],
-      proposedPrice: data['proposedPrice'].toDouble(),
-      status: RequestStatus.values.firstWhere(
-        (e) => e.toString() == data['status'],
-      ),
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
-      completedAt: data['completedAt'] != null
-          ? (data['completedAt'] as Timestamp).toDate()
-          : null,
-      paymentIntentId: data['paymentIntentId'],
-      isPaid: data['isPaid'] ?? false,
-    );
+    try {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      log('Parsing Firestore data: $data');
+      return ServiceRequestModel(
+        id: doc.id,
+        serviceId: data['serviceId'],
+        clientId: data['clientId'],
+        providerId: data['providerId'],
+        proposedPrice: data['proposedPrice'].toDouble(),
+        status: RequestStatus.values.firstWhere(
+              (e) => e.toString() == data['status'],
+        ),
+        createdAt: (data['createdAt'] as Timestamp).toDate(),
+        completedAt: data['completedAt'] != null
+            ? (data['completedAt'] as Timestamp).toDate()
+            : null,
+        paymentIntentId: data['paymentIntentId'],
+        isPaid: data['isPaid'] ?? false,
+      );
+    } catch (e) {
+      log('Error parsing Firestore data: $e');
+      throw Exception('Failed to parse service request: $e');
+    }
   }
-
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'serviceId': serviceId,
       'clientId': clientId,
       'providerId': providerId,

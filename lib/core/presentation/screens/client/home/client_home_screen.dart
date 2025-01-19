@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/services/auth_service.dart';
-import '../../../../../core/services/firestore_service.dart';
 import 'widgets/greeting_header.dart';
 import 'widgets/search_bar.dart' as costum;
 import 'widgets/popular_categories.dart';

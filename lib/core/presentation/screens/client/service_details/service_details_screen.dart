@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
@@ -22,8 +24,10 @@ class ServiceDetailsScreen extends StatelessWidget {
   }) : super(key: key);
 
   Future<void> _startChat(BuildContext context) async {
+    log("Starting chat with provider: ${service.providerId}");
     try {
       final currentUserId = _authService.currentUser?.uid;
+      log("Current User ID: $currentUserId");
       if (currentUserId == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Please login to chat')),
@@ -36,26 +40,36 @@ class ServiceDetailsScreen extends StatelessWidget {
         clientId: currentUserId,
         providerId: service.providerId,
       );
+      log("Existing Room: ${existingRoom?.toString() ?? 'null'}");
 
-      final Object chatRoom = existingRoom ?? await _chatService.createChatRoom(
-        ChatRoom(
-          id: Uuid().v4(),
-          serviceId: service.id,
-          clientId: currentUserId,
-          providerId: service.providerId,
-          createdAt: DateTime.now(),
-        ),
-      );
+      final ChatRoom chatRoom;
+      if (existingRoom is ChatRoom) {
+        chatRoom = existingRoom;
+      } else {
+        chatRoom = await _chatService.createChatRoom(
+          ChatRoom(
+            id: Uuid().v4(),
+            serviceId: service.id,
+            clientId: currentUserId,
+            providerId: service.providerId,
+            createdAt: DateTime.now(),
+          ),
+        );
+      }
+      log("Chat Room: $chatRoom");
 
       if (context.mounted) {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ChatScreen(chatRoom: chatRoom as ChatRoom),
+            builder: (context) => ChatScreen(chatRoom: chatRoom),
           ),
         );
+      } else {
+        log("Context is not mounted");
       }
     } catch (e) {
+      log("Error: $e");
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(e.toString())),

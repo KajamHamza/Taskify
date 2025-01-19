@@ -1,0 +1,62 @@
+{
+  "indexes": [
+    {
+      "collectionId": "services",
+      "fields": [
+        { "fieldPath": "isActive", "mode": "ASCENDING" },
+        { "fieldPath": "category", "mode": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionId": "services",
+      "fields": [
+        { "fieldPath": "isActive", "mode": "ASCENDING" },
+        { "fieldPath": "providerId", "mode": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionId": "services",
+      "fields": [
+        { "fieldPath": "isActive", "mode": "ASCENDING" },
+        { "fieldPath": "price", "mode": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionId": "services",
+      "fields": [
+        { "fieldPath": "isActive", "mode": "ASCENDING" },
+        { "fieldPath": "rating", "mode": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionId": "serviceRequests",
+      "fields": [
+        { "fieldPath": "clientId", "mode": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionId": "serviceRequests",
+      "fields": [
+        { "fieldPath": "providerId", "mode": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionId": "serviceRequests",
+      "fields": [
+        { "fieldPath": "status", "mode": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionId": "categories",
+      "fields": [
+        { "fieldPath": "name", "mode": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionId": "services",
+      "fields": [
+        { "fieldPath": "title", "mode": "ASCENDING" }
+      ]
+    }
+  ]
+}

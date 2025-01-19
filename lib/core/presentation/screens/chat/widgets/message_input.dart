@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../../models/chat_model.dart';
 import '../../../../services/auth_service.dart';
@@ -28,7 +29,7 @@ class _MessageInputState extends State<MessageInput> {
 
     try {
       final message = ChatMessage(
-        id: '',
+        id: Uuid().v4(),
         senderId: AuthService().currentUser!.uid,
         content: _controller.text.trim(),
         timestamp: DateTime.now(),

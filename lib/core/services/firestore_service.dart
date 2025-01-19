@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import '../models/review_model.dart';
 import '../models/user_model.dart';
 import '../models/service_model.dart';
 import '../models/service_request_model.dart';
+import 'dart:developer';
 
-class FirestoreService {
+class FirestoreService{
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   // User Operations
@@ -23,36 +25,7 @@ class FirestoreService {
     return ref.id;
   }
 
-  Stream<List<ServiceModel>> getServices({
-    String? category,
-    String? providerId,
-    GeoPoint? nearLocation,
-    double? maxPrice,
-  }) {
-    Query query = _db.collection('services').where('isActive', isEqualTo: true);
 
-    if (category != null) {
-      query = query.where('category', isEqualTo: category);
-    }
-    if (providerId != null) {
-      query = query.where('providerId', isEqualTo: providerId);
-    }
-    if (maxPrice != null) {
-      query = query.where('price', isLessThanOrEqualTo: maxPrice);
-    }
-
-    return query.snapshots().map((snapshot) =>
-        snapshot.docs.map((doc) => ServiceModel.fromFirestore(doc)).toList());
-  }
-
-  //get service Stream
-  Stream<ServiceModel> getServiceStream(String serviceId) {
-    return FirebaseFirestore.instance
-        .collection('services')
-        .doc(serviceId)
-        .snapshots()
-        .map((snapshot) => ServiceModel.fromFirestore(snapshot));
-  }
 
   // Service Request Operations
   Future<String> createServiceRequest(ServiceRequestModel request) async {
@@ -87,7 +60,14 @@ class FirestoreService {
     return _db.collection('serviceRequests')
         .doc(requestId)
         .snapshots()
-        .map((snapshot) => ServiceRequestModel.fromFirestore(snapshot));
+        .map((snapshot) {
+      if (snapshot.exists) {
+        log('Service request fetched successfully: ${snapshot.data()}');
+      } else {
+        log('Service request not found: $requestId');
+      }
+      return ServiceRequestModel.fromFirestore(snapshot);
+    });
   }
 
   Future<void> updateRequestStatus(
@@ -155,16 +135,6 @@ Future<bool> userExists(String uid) async {
       .doc(userId)
       .snapshots()
       .map((snapshot) => UserModel.fromFirestore(snapshot));
-}
-
-  Stream<List<ServiceModel>> getTopServices() {
-  return _db.collection('services')
-      .orderBy('rating', descending: true)
-      .limit(10)
-      .snapshots()
-      .map((snapshot) => snapshot.docs
-          .map((doc) => ServiceModel.fromFirestore(doc))
-          .toList());
 }
 
  Future<void> deleteUser(String userId) async {
@@ -242,5 +212,43 @@ Future<bool> userExists(String uid) async {
         .map((snapshot) => snapshot.docs
         .map((doc) => ServiceModel.fromFirestore(doc))
         .toList());
+  }
+
+  Stream<List<ServiceModel>> getTopRatedServicesStream() {
+    return _db
+        .collection('services')
+        .where('rating', isNotEqualTo: null) // Ensure documents have a rating
+        .orderBy('rating', descending: true)
+        .limit(5)
+        .snapshots()
+        .map((querySnapshot) {
+      // Debug: Print the number of documents fetched
+      log('Fetched ${querySnapshot.docs.length} documents');
+
+      // Debug: Print each document's data
+      querySnapshot.docs.forEach((doc) {
+        log('Document ID: ${doc.id}, Data: ${doc.data()}');
+      });
+
+      return querySnapshot.docs.map((doc) {
+        return ServiceModel.fromFirestore(doc);
+      }).toList();
+    });
+  }
+
+ Stream<List<ServiceModel>> getServices({String? providerId}) {
+  Query query = _db.collection('services');
+
+  if (providerId != null) {
+    query = query.where('providerId', isEqualTo: providerId);
+  }
+
+  return query.snapshots().map((snapshot) {
+    return snapshot.docs.map((doc) => ServiceModel.fromFirestore(doc)).toList();
+  });
+}
+
+  Future<void> updateService(ServiceModel updatedService) async {
+    await _db.collection('services').doc(updatedService.id).update(updatedService.toMap());
   }
 }

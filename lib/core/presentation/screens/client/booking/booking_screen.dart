@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -29,6 +31,7 @@ class _BookingScreenState extends State<BookingScreen> {
   TimeOfDay? _selectedTime;
   GeoPoint? _selectedLocation;
   bool _isLoading = false;
+  String _paymentMethod = 'online'; // Default payment method
 
   Future<void> _handleBooking() async {
     if (_selectedDate == null || _selectedTime == null || _selectedLocation == null) {
@@ -59,6 +62,7 @@ class _BookingScreenState extends State<BookingScreen> {
         clientId: currentUserId,
         bookingDateTime: bookingDateTime,
         location: _selectedLocation!,
+        paymentMethod: _paymentMethod,
       );
 
       if (mounted) {
@@ -170,6 +174,8 @@ class _BookingScreenState extends State<BookingScreen> {
           ),
           const SizedBox(height: 24),
           BookingSummary(service: widget.service),
+          const SizedBox(height: 24),
+          _buildPaymentMethodSelector(),
         ],
       ),
       bottomNavigationBar: SafeArea(
@@ -196,6 +202,39 @@ class _BookingScreenState extends State<BookingScreen> {
           ),
         ),
       ),
+
+    );
+  }
+
+  Widget _buildPaymentMethodSelector() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Select Payment Method',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        RadioListTile<String>(
+          title: const Text('Pay Online'),
+          value: 'online',
+          groupValue: _paymentMethod,
+          onChanged: (value) {
+            setState(() {
+              _paymentMethod = value!;
+            });
+          },
+        ),
+        RadioListTile<String>(
+          title: const Text('Pay in Cash'),
+          value: 'cash',
+          groupValue: _paymentMethod,
+          onChanged: (value) {
+            setState(() {
+              _paymentMethod = value!;
+            });
+          },
+        ),
+      ],
     );
   }
 }

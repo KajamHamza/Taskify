@@ -19,10 +19,10 @@ class ChatMessage {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return ChatMessage(
       id: doc.id,
-      senderId: data['senderId'],
-      content: data['content'],
-      timestamp: (data['timestamp'] as Timestamp).toDate(),
-      isRead: data['isRead'] ?? false,
+      senderId: data['senderId'] ?? '', // Handle null senderId
+      content: data['content'] ?? '', // Handle null content
+      timestamp: (data['timestamp'] as Timestamp?)?.toDate() ?? DateTime.now(), // Handle null timestamp
+      isRead: data['isRead'] ?? false, // Handle null isRead
     );
   }
 
@@ -59,20 +59,20 @@ class ChatRoom {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return ChatRoom(
       id: doc.id,
-      serviceId: data['serviceId'],
-      clientId: data['clientId'],
-      providerId: data['providerId'],
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
+      serviceId: data['serviceId'] ?? '', // Handle null serviceId
+      clientId: data['clientId'] ?? '', // Handle null clientId
+      providerId: data['providerId'] ?? '', // Handle null providerId
+      createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(), // Handle null createdAt
       lastMessageAt: data['lastMessageAt'] != null
           ? (data['lastMessageAt'] as Timestamp).toDate()
-          : null,
-      lastMessage: data['lastMessage'],
+          : null, // Handle null lastMessageAt
+      lastMessage: data['lastMessage'], // lastMessage can be null
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'requestId': serviceId,
+      'serviceId': serviceId,
       'clientId': clientId,
       'providerId': providerId,
       'createdAt': Timestamp.fromDate(createdAt),

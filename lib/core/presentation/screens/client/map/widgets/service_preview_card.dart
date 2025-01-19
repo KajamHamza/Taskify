@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../models/service_model.dart';
+import '../../service_details/service_details_screen.dart';
 
 
 class ServicePreviewCard extends StatelessWidget {
@@ -15,12 +16,12 @@ class ServicePreviewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        /*Navigator.push(
-          context
+        Navigator.push(
+          context,
           MaterialPageRoute(
             builder: (context) => ServiceDetailsScreen(service: service),
           ),
-        );*/
+        );
       },
       child: Container(
         margin: const EdgeInsets.all(16),

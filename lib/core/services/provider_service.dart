@@ -41,13 +41,13 @@ class ProviderService {
     }
   }
 
-  Future<void> updateService({
+  Future<String> updateService({
     required String serviceId,
     String? title,
     String? description,
     List<String>? images,
     double? price,
-    String? category,
+    required CategoryModel category,
     GeoPoint? location,
     bool? isActive,
   }) async {
@@ -68,6 +68,8 @@ class ProviderService {
           .collection(AppConstants.servicesCollection)
           .doc(serviceId)
           .update(updates);
+
+      return serviceId;
     } catch (e) {
       throw Exception('Failed to update service: $e');
     }

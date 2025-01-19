@@ -6,16 +6,7 @@ class ChatService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   // Create a new chat room
-  Future<String> createChatRoom(ChatRoom chatRoom) async {
-    try {
-      DocumentReference ref = await _db
-          .collection(AppConstants.chatsCollection)
-          .add(chatRoom.toMap());
-      return ref.id;
-    } catch (e) {
-      throw Exception('Failed to create chat room: $e');
-    }
-  }
+
 
   // Send a message
   Future<void> sendMessage(String roomId, ChatMessage message) async {
@@ -86,17 +77,22 @@ class ChatService {
   }
 
   Stream<List<ChatRoom>> getUserChats(String userId) {
+  try {
     return _db
         .collection(AppConstants.chatsCollection)
         .where(Filter.or(
-      Filter('clientId', isEqualTo: userId),
-      Filter('providerId', isEqualTo: userId),
-    ))
+          Filter('clientId', isEqualTo: userId),
+          Filter('providerId', isEqualTo: userId),
+        ))
         .orderBy('lastMessageAt', descending: true)
         .snapshots()
         .map((snapshot) =>
-        snapshot.docs.map((doc) => ChatRoom.fromFirestore(doc)).toList());
+            snapshot.docs.map((doc) => ChatRoom.fromFirestore(doc)).toList());
+  } catch (e) {
+    print('Failed to get user chats: $e');
+    return Stream.empty();
   }
+}
 
   Future<ChatRoom?> findChatRoom({required String clientId, required String providerId}) async {
   try {
@@ -114,6 +110,15 @@ class ChatService {
     }
   } catch (e) {
     throw Exception('Failed to find chat room: $e');
+  }
+}
+
+Future<ChatRoom> createChatRoom(ChatRoom chatRoom) async {
+  try {
+    await _db.collection(AppConstants.chatsCollection).doc(chatRoom.id).set(chatRoom.toMap());
+    return chatRoom;
+  } catch (e) {
+    throw Exception('Failed to create chat room: $e');
   }
 }
 

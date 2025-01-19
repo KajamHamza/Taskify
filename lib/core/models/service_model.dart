@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'category_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -32,20 +34,24 @@ class ServiceModel {
   });
 
   factory ServiceModel.fromFirestore(DocumentSnapshot doc) {
-    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    final Map<String, dynamic> data = doc.data() as Map<String, dynamic>? ?? {};
+
+    final categoryData = data['category'] as Map<String, dynamic>? ?? {};
+    final category = CategoryModel.fromMap(categoryData);
+
     return ServiceModel(
       id: doc.id,
-      providerId: data['providerId'],
-      title: data['title'],
-      description: data['description'],
-      images: List<String>.from(data['images']),
-      price: data['price'].toDouble(),
-      category: CategoryModel.fromFirestore(doc.reference.parent.parent!.get() as DocumentSnapshot<Object?>),
-      location: data['location'],
-      rating: data['rating']?.toDouble() ?? 0.0,
-      reviewCount: data['reviewCount'] ?? 0,
-      isActive: data['isActive'] ?? true,
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
+      providerId: data['providerId'] as String? ?? '',
+      title: data['title'] as String? ?? '',
+      description: data['description'] as String? ?? '',
+      images: List<String>.from(data['images'] ?? []),
+      price: (data['price'] as num?)?.toDouble() ?? 0.0,
+      category: category,
+      location: data['location'] as GeoPoint? ?? const GeoPoint(0, 0),
+      rating: (data['rating'] as num?)?.toDouble() ?? 0.0,
+      reviewCount: (data['reviewCount'] as int?) ?? 0,
+      isActive: data['isActive'] as bool? ?? true,
+      createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
   }
 
@@ -73,12 +79,42 @@ class ServiceModel {
       description: map['description'],
       images: List<String>.from(map['images']),
       price: map['price'],
-      location: GeoPoint(map['location']['latitude'], map['location']['longitude']),
-      category: map['category'],
+      location: map['location'] as GeoPoint,
+      category: CategoryModel.fromMap(map['category']),
       rating: map['rating'],
       reviewCount: map['reviewCount'],
       isActive: map['isActive'],
       createdAt: map['createdAt'].toDate(),
+    );
+  }
+
+ ServiceModel copyWith({
+    String? id,
+    String? providerId,
+    String? title,
+    String? description,
+    List<String>? images,
+    double? price,
+    CategoryModel? category,
+    GeoPoint? location,
+    double? rating,
+    int? reviewCount,
+    bool? isActive,
+    DateTime? createdAt,
+  }) {
+    return ServiceModel(
+      id: id ?? this.id,
+      providerId: providerId ?? this.providerId,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      images: images ?? this.images,
+      price: price ?? this.price,
+      category: category ?? this.category,
+      location: location ?? this.location,
+      rating: rating ?? this.rating,
+      reviewCount: reviewCount ?? this.reviewCount,
+      isActive: isActive ?? this.isActive,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 }

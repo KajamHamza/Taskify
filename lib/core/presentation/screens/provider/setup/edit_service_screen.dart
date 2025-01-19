@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -10,14 +12,16 @@ import '../../../widgets/custom_text_field.dart';
 import 'widgets/service_image_picker.dart';
 import 'service_success_screen.dart';
 
-class AddServiceScreen extends StatefulWidget {
-  const AddServiceScreen({Key? key}) : super(key: key);
+class EditServiceScreen extends StatefulWidget {
+  final ServiceModel service;
+
+  const EditServiceScreen({Key? key, required this.service}) : super(key: key);
 
   @override
-  State<AddServiceScreen> createState() => _AddServiceScreenState();
+  State<EditServiceScreen> createState() => _EditServiceScreen();
 }
 
-class _AddServiceScreenState extends State<AddServiceScreen> {
+class _EditServiceScreen extends State<EditServiceScreen> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
@@ -34,11 +38,40 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
   @override
   void initState() {
     super.initState();
+    _titleController.text = widget.service.title;
+    _descriptionController.text = widget.service.description;
+    _priceController.text = widget.service.price.toString();
+    _addressController.text = widget.service.location.toString();
+    _selectedImages = widget.service.images;
+    _selectedCategory = widget.service.category;
+
+    log('Service Category: ${widget.service.category}');
+    log('Selected Category: $_selectedCategory');
+
     _fetchCategories();
   }
 
   Future<void> _fetchCategories() async {
     _categories = await ProviderService().getCategories();
+    _categories = _categories.toSet().toList(); // Remove duplicates
+
+    log('Fetched Categories: $_categories');
+    log('Initial Selected Category: $_selectedCategory');
+
+    // Match the _selectedCategory with the fetched categories
+    if (_selectedCategory != null) {
+      _selectedCategory = _categories.firstWhere(
+            (category) => category.id == _selectedCategory!.id,
+        orElse: () => _selectedCategory!, // Fallback to the original if not found
+      );
+    }
+
+    // Check for invalid _selectedCategory
+    if (_selectedCategory != null && _selectedCategory!.id.isEmpty) {
+      _selectedCategory = null; // Reset to null if invalid
+    }
+
+    log('Updated Selected Category: $_selectedCategory');
     setState(() {});
   }
 
@@ -92,8 +125,8 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
           : await _getLocationFromAddress(_addressController.text);
       final createdAt = DateTime.now();
 
-      final serviceId = await ProviderService().createService(
-        providerId: providerId,
+      final serviceId = await ProviderService().updateService(
+        serviceId: widget.service.id,
         title: title,
         description: description,
         images: images,
@@ -125,7 +158,7 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add a Task'),
+        title: const Text('Edit a Task'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
@@ -154,14 +187,12 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                   child: DropdownButtonFormField<CategoryModel>(
                     decoration: InputDecoration(labelText: 'Category'),
                     value: _selectedCategory,
-                    items: _categories.isNotEmpty
-                        ? _categories.map((category) {
+                    items: _categories.map((category) {
                       return DropdownMenuItem<CategoryModel>(
                         value: category,
                         child: Text(category.name),
                       );
-                    }).toList()
-                        : null,
+                    }).toList(),
                     onChanged: (value) {
                       setState(() {
                         _selectedCategory = value;
@@ -220,7 +251,7 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
               onPressed: _isLoading ? null : _handleSubmit,
               child: _isLoading
                   ? const CircularProgressIndicator()
-                  : const Text('Save'),
+                  : const Text('Edit'),
             ),
           ],
         ),

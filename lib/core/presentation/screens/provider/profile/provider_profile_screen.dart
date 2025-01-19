@@ -63,7 +63,10 @@ class _ProviderProfileScreen extends StatelessWidget {
             ),
             const SizedBox(height: 32),
             TextButton(
-              onPressed: () => AuthService().signOut(),
+              onPressed: () => {
+                AuthService().signOut(),
+                Navigator.of(context).pushReplacementNamed('/auth')
+              },
               style: TextButton.styleFrom(
                 backgroundColor: Colors.blue.shade50,
                 foregroundColor: Colors.blue,

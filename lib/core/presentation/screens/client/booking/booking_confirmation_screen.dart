@@ -4,7 +4,6 @@ import '../../../../models/service_request_model.dart';
 import '../../../../services/firestore_service.dart';
 import '../../../../utils/date_formatter.dart';
 
-
 class BookingConfirmationScreen extends StatelessWidget {
   final String requestId;
 
@@ -54,12 +53,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(16),
                       child: Column(
                         children: [
-                          _buildInfoRow(
-                            context,
-                            'Booking ID',
-                            '#${request.id.substring(0, 8)}',
-                          ),
-                          const Divider(height: 24),
+                          // Removed Booking ID row
                           _buildInfoRow(
                             context,
                             'Status',

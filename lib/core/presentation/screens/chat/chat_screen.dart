@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
@@ -11,8 +13,9 @@ import 'widgets/message_bubble.dart';
 
 class ChatScreen extends StatelessWidget {
   final ChatRoom chatRoom;
+  final TextEditingController _messageController = TextEditingController();
 
-  const ChatScreen({
+  ChatScreen({
     Key? key,
     required this.chatRoom,
   }) : super(key: key);
@@ -36,7 +39,14 @@ class ChatScreen extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 20,
-                  backgroundImage: NetworkImage(snapshot.data!.photoUrl ?? ''),
+                  backgroundImage: AuthService().currentUser?.photoURL != null &&
+                      AuthService().currentUser!.photoURL!.isNotEmpty
+                      ? NetworkImage(AuthService().currentUser!.photoURL!)
+                      : null,
+                  child: AuthService().currentUser?.photoURL == null ||
+                      AuthService().currentUser!.photoURL!.isEmpty
+                      ? const Icon(Icons.person)
+                      : null,
                 ),
                 const SizedBox(width: 12),
                 Column(
@@ -125,24 +135,11 @@ class ChatScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(24),
                         ),
                         child: TextField(
+                          controller: _messageController, // Assign the controller
                           decoration: const InputDecoration(
                             hintText: 'Type a message...',
                             border: InputBorder.none,
                           ),
-                          onSubmitted: (text) {
-                            if (text.isNotEmpty) {
-                              ChatService().sendMessage(
-                                chatRoom.id,
-                                ChatMessage(
-                                    id: Uuid().v4(),
-                                    senderId: AuthService().userId,
-                                    content: text,
-                                    timestamp: DateTime.now(),
-                                ),
-
-                              );
-                            }
-                          },
                         ),
                       ),
                     ),
@@ -156,8 +153,22 @@ class ChatScreen extends StatelessWidget {
                       ),
                       child: IconButton(
                         icon: const Icon(Icons.send, color: Colors.white),
-                        onPressed: () {
-                          // Send message
+                        onPressed: () async {
+                          final messageText = _messageController.text.trim();
+                          if (messageText.isNotEmpty) {
+                            final newMessage = ChatMessage(
+                              id: Uuid().v4(),
+                              senderId: AuthService().currentUser?.uid ?? '',
+                              content: messageText,
+                              timestamp: DateTime.now(),
+                            );
+                            try {
+                              await ChatService().sendMessage(chatRoom.id, newMessage);
+                              _messageController.clear(); // Clear the input field
+                            } catch (e) {
+                              log('Failed to send message: $e');
+                            }
+                          }
                         },
                       ),
                     ),

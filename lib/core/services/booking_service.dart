@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:uuid/uuid.dart';
 import '../models/service_request_model.dart';
 import '../utils/constants.dart';
 
@@ -6,29 +9,34 @@ class BookingService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   Future<String> createBooking({
+    required String id, // Accept the bookingId
     required String serviceId,
     required String clientId,
     required String providerId,
     required double proposedPrice,
     required DateTime bookingDateTime,
-    required GeoPoint location, required paymentIntentId,
+    required GeoPoint location,
+    String? paymentIntentId, // Make it optional
   }) async {
     try {
       final request = ServiceRequestModel(
-        id: '',
+        id: id, // Use the passed bookingId
         serviceId: serviceId,
         clientId: clientId,
         providerId: providerId,
         proposedPrice: proposedPrice,
         status: RequestStatus.pending,
         createdAt: DateTime.now(),
+        paymentIntentId: paymentIntentId, // Pass null for cash payments
       );
 
-      final docRef = await _db
+       await _db
           .collection(AppConstants.requestsCollection)
-          .add(request.toMap());
+          .doc(id) // Use the bookingId as the document ID
+          .set(request.toMap());
 
-      return docRef.id;
+      log('Booking saved with ID: $id');
+      return id; // Return the bookingId
     } catch (e) {
       throw Exception('Failed to create booking: $e');
     }
