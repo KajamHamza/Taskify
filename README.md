@@ -47,7 +47,7 @@
 ### **Steps to Run the App**
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/your-username/TASKIFY.git
+   git clone .....
    cd TASKIFY
    ```
 
