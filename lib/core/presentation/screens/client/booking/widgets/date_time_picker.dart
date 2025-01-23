@@ -44,37 +44,86 @@ class DateTimePicker extends StatelessWidget {
       children: [
         Text(
           'Select Date & Time',
-          style: Theme.of(context).textTheme.titleMedium,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
         ),
         const SizedBox(height: 16),
         Row(
           children: [
             Expanded(
-              child: OutlinedButton.icon(
+              child: _buildDateTimeButton(
+                icon: Icons.calendar_today,
+                label: selectedDate != null
+                    ? DateFormat('MMM dd, yyyy').format(selectedDate!)
+                    : 'Select Date',
                 onPressed: () => _selectDate(context),
-                icon: const Icon(Icons.calendar_today),
-                label: Text(
-                  selectedDate != null
-                      ? DateFormat('MMM dd, yyyy').format(selectedDate!)
-                      : 'Select Date',
-                ),
               ),
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: OutlinedButton.icon(
+              child: _buildDateTimeButton(
+                icon: Icons.access_time,
+                label: selectedTime != null
+                    ? selectedTime!.format(context)
+                    : 'Select Time',
                 onPressed: () => _selectTime(context),
-                icon: const Icon(Icons.access_time),
-                label: Text(
-                  selectedTime != null
-                      ? selectedTime!.format(context)
-                      : 'Select Time',
-                ),
               ),
             ),
           ],
         ),
       ],
+    );
+  }
+
+  Widget _buildDateTimeButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onPressed,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 6,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: onPressed,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  size: 20,
+                  color: Colors.blue.shade700,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black87,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

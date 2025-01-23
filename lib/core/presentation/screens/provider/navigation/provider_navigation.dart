@@ -26,50 +26,67 @@ class _ProviderNavigationState extends State<ProviderNavigation> {
     return Scaffold(
       body: _screens[_currentIndex],
       bottomNavigationBar: Container(
-        height: 100,
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8), // Add margin for floating effect
         decoration: BoxDecoration(
           color: Colors.black,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+          borderRadius: BorderRadius.circular(30), // Rounded corners
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
+              color: Colors.black.withOpacity(0.2), // Shadow color
+              blurRadius: 10, // Shadow blur
+              offset: const Offset(0, 4), // Shadow position
             ),
           ],
         ),
-        child: NavigationBar(
-          selectedIndex: _currentIndex,
-          onDestinationSelected: (index) {
-            setState(() => _currentIndex = index);
-          },
-          backgroundColor: Colors.transparent,
-          indicatorColor: Colors.transparent,
-          /*indicatorShape: CircleBorder(
-            side: BorderSide(color: Colors.lightBlue, width:),
-          ),*/
-          elevation: 0,
-          destinations: const [
-            NavigationDestination(
-              icon: Icon(Icons.add_outlined, color: Colors.white, size: 38,),
-              selectedIcon: Icon(Icons.add, color: Colors.lightBlue, size: 38,),
-              label: '',
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(30), // Clip the child with rounded corners
+          child: NavigationBarTheme(
+            data: NavigationBarThemeData(
+              labelTextStyle: MaterialStateProperty.resolveWith<TextStyle>(
+                    (Set<MaterialState> states) {
+                  // Always return white color for labels
+                  return const TextStyle(
+                    color: Colors.white, // Label color is always white
+                    fontSize: 12,
+                    fontWeight: FontWeight.normal,
+                  );
+                },
+              ),
             ),
-            NavigationDestination(
-              icon: Icon(Icons.query_stats_outlined, color: Colors.white, size: 38,),
-              selectedIcon: Icon(Icons.query_stats, color: Colors.lightBlue, size: 38,),
-              label: '',
+            child: NavigationBar(
+              selectedIndex: _currentIndex,
+              onDestinationSelected: (index) {
+                setState(() => _currentIndex = index);
+              },
+              backgroundColor: Colors.transparent,
+              indicatorColor: Colors.transparent,
+              elevation: 0,
+              height: 80, // Adjusted height
+              labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+              destinations: const [
+                NavigationDestination(
+                  icon: Icon(Icons.add_outlined, color: Colors.white, size: 30), // Adjusted icon size
+                  selectedIcon: Icon(Icons.add, color: Colors.lightBlue, size: 30),
+                  label: 'Services',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.query_stats_outlined, color: Colors.white, size: 30),
+                  selectedIcon: Icon(Icons.query_stats, color: Colors.lightBlue, size: 30),
+                  label: 'Statistics',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.history_outlined, color: Colors.white, size: 30),
+                  selectedIcon: Icon(Icons.history_outlined, color: Colors.lightBlue, size: 30),
+                  label: 'Requests',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.person_outline, color: Colors.white, size: 30),
+                  selectedIcon: Icon(Icons.person, color: Colors.lightBlue, size: 30),
+                  label: 'Profile',
+                ),
+              ],
             ),
-            NavigationDestination(
-              icon: Icon(Icons.history_outlined, color: Colors.white, size: 38,),
-              selectedIcon: Icon(Icons.history_outlined, color: Colors.lightBlue, size: 38,),
-              label: '',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.person_outline, color: Colors.white, size: 38,),
-              selectedIcon: Icon(Icons.person, color: Colors.lightBlue, size: 38,),
-              label: '',
-            ),
-          ],
+          ),
         ),
       ),
     );

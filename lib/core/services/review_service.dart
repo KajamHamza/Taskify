@@ -61,4 +61,15 @@ class ReviewService {
         .map((snapshot) =>
         snapshot.docs.map((doc) => ReviewModel.fromFirestore(doc)).toList());
   }
+
+  Stream<List<ReviewModel>> getClientServiceReviews(String clientId, String serviceId) {
+    return _db
+        .collection(AppConstants.reviewsCollection)
+        .where('userId', isEqualTo: clientId)
+        .where('serviceId', isEqualTo: serviceId)
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((snapshot) =>
+        snapshot.docs.map((doc) => ReviewModel.fromFirestore(doc)).toList());
+    }
 }

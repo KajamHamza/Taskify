@@ -114,9 +114,9 @@ class ServiceSearchDelegate extends SearchDelegate<String> {
             const SizedBox(height: 16),
             ...otherCategories.map((category) => _buildCategoryItem(
               context,
-              category['name'],
-              category['availableCount'],
-              category['image'],
+              category['name'] ?? '',
+              category['availableCount'] ?? 0,
+              category['imageUrl'],
             )),
           ],
         );
@@ -146,7 +146,7 @@ class ServiceSearchDelegate extends SearchDelegate<String> {
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.network(
-                category['image'],
+                category['imageUrl'],
                 width: 60,
                 height: 60,
                 fit: BoxFit.cover,
@@ -158,14 +158,14 @@ class ServiceSearchDelegate extends SearchDelegate<String> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    category['name'],
+                    category['name'] ?? '',
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
-                    '${category['availableCount']} availables',
+                    '${category['availableCount'] ?? 0} availables',
                     style: TextStyle(color: Colors.grey[600]),
                   ),
                 ],
@@ -189,7 +189,7 @@ class ServiceSearchDelegate extends SearchDelegate<String> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => SearchResultsScreen(searchQuery: name),
+            builder: (context) => SearchResultsScreen(searchQuery: name ?? ''),
           ),
         );
       },

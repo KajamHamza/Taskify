@@ -20,11 +20,11 @@ class _AuthScreenState extends State<AuthScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(24.0),
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 48),
+                const SizedBox(height: 32),
                 Text(
                   _showLogin ? 'Welcome Back!' : 'Create Account',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -33,7 +33,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
                 Text(
                   _showLogin
                       ? 'Sign in to continue'
@@ -61,34 +61,58 @@ class _AuthScreenState extends State<AuthScreen> {
                       },
                       child: Text(
                         _showLogin ? 'Register' : 'Login',
-                        style: const TextStyle(color: Color(0xFF0080FF)),
+                        style: const TextStyle(
+                          color: Color(0xFF0080FF),
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],
                 ),
                 if (_showLogin) ...[
-                  const SizedBox(height: 24),
-                  const Divider(height: 1),
+                  const SizedBox(height: 32),
+                  const Row(
+                    children: [
+                      Expanded(child: Divider(height: 1, color: Colors.grey)),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8),
+                        child: Text(
+                          'OR',
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                      Expanded(child: Divider(height: 1, color: Colors.grey)),
+                    ],
+                  ),
                   const SizedBox(height: 24),
                   OutlinedButton(
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                          const ProviderRegisterScreen(),
+                          builder: (context) => const ProviderRegisterScreen(),
                         ),
                       );
                     },
                     style: OutlinedButton.styleFrom(
                       foregroundColor: const Color(0xFF0080FF),
                       side: const BorderSide(color: Color(0xFF0080FF)),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                     ),
-                    child: const Text('Promote Your Service', style: TextStyle(
-                      color: Color(0xFF0080FF),
-                      fontSize: 16,
-                    )),
+                    child: const Text(
+                      'Promote Your Service',
+                      style: TextStyle(
+                        color: Color(0xFF0080FF),
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ],
               ],

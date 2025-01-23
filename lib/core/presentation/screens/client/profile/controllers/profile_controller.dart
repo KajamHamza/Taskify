@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import '../../../../../models/user_model.dart';
 import '../../../../../services/auth_service.dart';
 import '../../../../../services/firestore_service.dart';
+import '../../Coming_soon_page.dart';
+import '../Settings.dart';
+import '../Support.dart';
 
 
 class ProfileController extends ChangeNotifier {
@@ -25,23 +28,44 @@ class ProfileController extends ChangeNotifier {
   }
 
   void navigateToEditProfile(BuildContext context) {
-    // Navigate to edit profile screen
+    Navigator.pushNamed(context, '/editProfile', arguments: _currentUser);
   }
 
   void navigateToPayments(BuildContext context) {
-    // Navigate to payments screen
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const ComingSoonPage(title: 'Coming Soon'),
+      ),
+    );
   }
 
   void navigateToPromos(BuildContext context) {
-    // Navigate to promos screen
+    //use coming soon screen
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const ComingSoonPage(title: 'Coming Soon'),
+      ),
+    );
   }
 
   void navigateToSettings(BuildContext context) {
-    // Navigate to settings screen
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SettingsPage(),
+      ),
+    );
   }
 
   void navigateToSupport(BuildContext context) {
-    // Navigate to support screen
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SupportPage(),
+      ),
+    );
   }
 
   Future<void> showDeleteAccountConfirmation(BuildContext context) async {

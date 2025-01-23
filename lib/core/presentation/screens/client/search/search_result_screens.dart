@@ -16,6 +16,7 @@ class SearchResultsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text('Results for "$searchQuery"'),
         actions: [
           IconButton(

@@ -14,6 +14,7 @@ class AppConstants {
   // Storage Paths
   static const String profileImagesPath = 'profile_images';
   static const String serviceImagesPath = 'service_images';
+  static const String categoriesImagesPath = 'categories_images';
   
   // Notification Channels
   static const String mainNotificationChannel = 'service_app_channel';

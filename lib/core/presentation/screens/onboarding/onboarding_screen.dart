@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-import 'package:flutter/material.dart';
-
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({Key? key}) : super(key: key);
 
@@ -40,6 +38,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       body: SafeArea(
         child: Column(
           children: [
+            // Skip Button
             Align(
               alignment: Alignment.topRight,
               child: Padding(
@@ -53,11 +52,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     style: TextStyle(
                       color: theme.colorScheme.primary,
                       fontSize: 16,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
               ),
             ),
+            // PageView for Onboarding Screens
             Expanded(
               child: PageView.builder(
                 controller: _pageController,
@@ -70,22 +71,25 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 },
               ),
             ),
+            // Dot Indicators
             Padding(
-              padding: const EdgeInsets.only(bottom: 50.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(
-                  _pages.length,
-                      (index) => DotIndicator(
-                    isActive: index == _currentPage,
-                    activeColor: theme.colorScheme.primary,
-                    inactiveColor: theme.colorScheme.surface,
-                  ),
+              padding: const EdgeInsets.only(bottom: 24.0),
+              child: SmoothPageIndicator(
+                controller: _pageController,
+                count: _pages.length,
+                effect: ExpandingDotsEffect(
+                  activeDotColor: theme.colorScheme.primary,
+                  dotColor: theme.colorScheme.surface,
+                  dotHeight: 8,
+                  dotWidth: 8,
+                  spacing: 8,
+                  expansionFactor: 3,
                 ),
               ),
             ),
+            // Next/Get Started Button
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
               child: SizedBox(
                 width: double.infinity,
                 height: 56,
@@ -100,8 +104,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       Navigator.pushReplacementNamed(context, '/auth');
                     }
                   },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: theme.colorScheme.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
                   child: Text(
                     _currentPage < _pages.length - 1 ? 'Next' : 'Get Started',
+                    style: TextStyle(
+                      color: theme.colorScheme.onPrimary,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -129,58 +144,35 @@ class OnboardingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          // Image
           Image.asset(
             image,
             height: MediaQuery.of(context).size.height * 0.4,
           ),
-          const SizedBox(height: 48),
+          const SizedBox(height: 32),
+          // Title
           Text(
             title,
-            style: theme.textTheme.titleLarge?.copyWith(
+            style: theme.textTheme.headlineSmall?.copyWith(
               color: theme.colorScheme.primary,
               fontWeight: FontWeight.bold,
             ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
+          // Description
           Text(
             description,
-            style: theme.textTheme.bodyMedium?.copyWith(
+            style: theme.textTheme.bodyLarge?.copyWith(
               color: theme.colorScheme.secondary,
             ),
             textAlign: TextAlign.center,
           ),
         ],
-      ),
-    );
-  }
-}
-
-class DotIndicator extends StatelessWidget {
-  final bool isActive;
-  final Color activeColor;
-  final Color inactiveColor;
-
-  const DotIndicator({
-    Key? key,
-    required this.isActive,
-    required this.activeColor,
-    required this.inactiveColor,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 4, // Reduced height for a more rectangular look
-      width: isActive ? 20 : 10, // Adjusted width for active and inactive states
-      margin: const EdgeInsets.symmetric(horizontal: 4),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(4),
-        color: isActive ? activeColor : inactiveColor,
       ),
     );
   }

@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import '../../../../../models/user_model.dart';
 import '../../../../../services/auth_service.dart';
 import '../../../../../services/firestore_service.dart';
+import '../../../client/Coming_soon_page.dart';
+import '../Settings.dart';
+import '../Support.dart';
+import '../edit_profile_page.dart';
 
 
 class ProfileController extends ChangeNotifier {
@@ -24,24 +28,74 @@ class ProfileController extends ChangeNotifier {
     }
   }
 
-  void navigateToEditProfile(BuildContext context) {
-    // Navigate to edit profile screen
+void navigateToEditProfile(BuildContext context) {
+  if (_currentUser != null) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => EditProfilePage(user: _currentUser!)),
+    );
+  } else {
+    // Handle the case when _currentUser is null
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('User data is not available')),
+    );
   }
+}
 
   void navigateToPayments(BuildContext context) {
-    // Navigate to payments screen
+    if (_currentUser != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ComingSoonPage()),
+      );
+    } else {
+      // Handle the case when _currentUser is null
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('User data is not available')),
+      );
+    }
   }
 
   void navigateToPromos(BuildContext context) {
-    // Navigate to promos screen
+    if (_currentUser != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ComingSoonPage()),
+      );
+    } else {
+      // Handle the case when _currentUser is null
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('User data is not available')),
+      );
+    }
   }
 
   void navigateToSettings(BuildContext context) {
-    // Navigate to settings screen
+    if (_currentUser != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SettingsPage()),
+      );
+    } else {
+      // Handle the case when _currentUser is null
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('User data is not available')),
+      );
+    }
   }
 
   void navigateToSupport(BuildContext context) {
-    // Navigate to support screen
+    if (_currentUser != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SupportPage()),
+      );
+    } else {
+      // Handle the case when _currentUser is null
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('User data is not available')),
+      );
+    }
   }
 
   Future<void> showDeleteAccountConfirmation(BuildContext context) async {

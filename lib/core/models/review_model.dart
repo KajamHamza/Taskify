@@ -2,20 +2,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ReviewModel {
   final String id;
-  final String serviceId;
-  final String userId;
-  final String userName;
-  final String? userPhotoUrl;
-  final double rating;
-  final String comment;
-  final DateTime createdAt;
-  final List<String>? images;
+  final String serviceId; // Make nullable
+  final String userId; // Make nullable
+  final String? userName; // Already nullable
+  final String? userPhotoUrl; // Already nullable
+  final double rating; // Make nullable
+  final String comment; // Make nullable
+  final DateTime createdAt; // Make nullable
+  final List<String>? images; // Already nullable
 
   ReviewModel({
     required this.id,
     required this.serviceId,
     required this.userId,
-    required this.userName,
+    this.userName,
     this.userPhotoUrl,
     required this.rating,
     required this.comment,
@@ -25,16 +25,17 @@ class ReviewModel {
 
   factory ReviewModel.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+
     return ReviewModel(
       id: doc.id,
-      serviceId: data['serviceId'],
-      userId: data['userId'],
-      userName: data['userName'],
-      userPhotoUrl: data['userPhotoUrl'],
-      rating: data['rating'].toDouble(),
-      comment: data['comment'],
+      serviceId: data['serviceId'] as String,
+      userId: data['userId'] as String,
+      userName: data['userName'] as String?,
+      userPhotoUrl: data['userPhotoUrl'] as String?,
+      rating: data['rating'],
+      comment: data['comment'] as String,
       createdAt: (data['createdAt'] as Timestamp).toDate(),
-      images: data['images'] != null ? List<String>.from(data['images']) : null,
+      images: List<String>.from(data['images'] ?? []),
     );
   }
 
@@ -46,7 +47,7 @@ class ReviewModel {
       'userPhotoUrl': userPhotoUrl,
       'rating': rating,
       'comment': comment,
-      'createdAt': Timestamp.fromDate(createdAt),
+      'createdAt': createdAt,
       'images': images,
     };
   }

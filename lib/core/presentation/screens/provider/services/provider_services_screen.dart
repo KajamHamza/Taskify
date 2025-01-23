@@ -46,7 +46,7 @@ class ProviderServicesScreen extends StatelessWidget {
           }
 
           final services = snapshot.data!;
-          
+
           if (services.isEmpty) {
             return Center(
               child: Column(

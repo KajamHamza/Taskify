@@ -177,4 +177,8 @@ class  AuthService {
     throw _handleAuthError(e);
   }
 }
+
+  String getCurrentUserId() {
+    return _auth.currentUser?.uid ?? '';
+  }
 }

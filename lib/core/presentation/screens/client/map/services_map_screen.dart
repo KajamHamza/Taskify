@@ -27,72 +27,88 @@ class _MapScreenContent extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
+          // Google Map with Rounded Corners
           if (controller.currentLocation != null)
-            GoogleMap(
-              key: ValueKey(controller.markers.length), // Rebuild when markers change
-              initialCameraPosition: CameraPosition(
-                target: controller.currentLocation!,
-                zoom: 14,
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(30),
+                bottomRight: Radius.circular(30),
               ),
-              markers: controller.markers,
-              myLocationEnabled: true,
-              myLocationButtonEnabled: false,
-              mapType: MapType.normal,
-              zoomControlsEnabled: false,
-              onTap: (_) {
-                // Clear the selected service when tapping on the map
-                controller.clearSelectedService();
-              },
+              child: GoogleMap(
+                key: ValueKey(controller.markers.length), // Rebuild when markers change
+                initialCameraPosition: CameraPosition(
+                  target: controller.currentLocation!,
+                  zoom: 14,
+                ),
+                markers: controller.markers,
+                myLocationEnabled: true,
+                myLocationButtonEnabled: false,
+                mapType: MapType.normal,
+                zoomControlsEnabled: false,
+                onTap: (_) {
+                  // Clear the selected service when tapping on the map
+                  controller.clearSelectedService();
+                },
+              ),
             )
           else
             const Center(child: CircularProgressIndicator()),
+          // Top Content
           SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Title and Subtitle
                 Padding(
                   padding: const EdgeInsets.all(16),
-                  child: Text(
-                    'Map',
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Map',
+                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Where does the task start?',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Colors.black54,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    'Where does the task start?',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black87,
-                    ),
+                // Search Bar
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: LocationSearchBar(
+                    onSearch: (query) {},
+                    currentRadius: 5.0,
                   ),
                 ),
-                const SizedBox(height: 8),
-                LocationSearchBar(
-                  onSearch: (query) {},
-                  currentRadius: 5.0,
-                ),
-                const Padding(
-                  padding: EdgeInsets.all(16),
+                const SizedBox(height: 16),
+                // Current Location Label
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Text(
                     'Your current location',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black87,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Colors.black54,
                     ),
                   ),
                 ),
               ],
             ),
           ),
-          // Show the preview when a marker is tapped
+          // Service Preview Card
           if (controller.selectedService != null)
             Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
+              bottom: 80, // Adjusted to avoid overlapping with the navigation bar
+              left: 16,
+              right: 16,
               child: ServicePreviewCard(service: controller.selectedService!),
             ),
         ],

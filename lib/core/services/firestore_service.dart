@@ -6,7 +6,7 @@ import '../models/service_model.dart';
 import '../models/service_request_model.dart';
 import 'dart:developer';
 
-class FirestoreService{
+class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   // User Operations
@@ -21,16 +21,16 @@ class FirestoreService{
 
   // Service Operations
   Future<String> createService(ServiceModel service) async {
-    DocumentReference ref = await _db.collection('services').add(service.toMap());
+    DocumentReference ref = await _db.collection('services').add(
+        service.toMap());
     return ref.id;
   }
-
 
 
   // Service Request Operations
   Future<String> createServiceRequest(ServiceRequestModel request) async {
     DocumentReference ref =
-        await _db.collection('serviceRequests').add(request.toMap());
+    await _db.collection('serviceRequests').add(request.toMap());
     return ref.id;
   }
 
@@ -51,9 +51,10 @@ class FirestoreService{
       query = query.where('status', isEqualTo: status.toString());
     }
 
-    return query.snapshots().map((snapshot) => snapshot.docs
-        .map((doc) => ServiceRequestModel.fromFirestore(doc))
-        .toList());
+    return query.snapshots().map((snapshot) =>
+        snapshot.docs
+            .map((doc) => ServiceRequestModel.fromFirestore(doc))
+            .toList());
   }
 
   Stream<ServiceRequestModel> getServiceRequest(String requestId) {
@@ -70,15 +71,7 @@ class FirestoreService{
     });
   }
 
-  Future<void> updateRequestStatus(
-    String requestId,
-    RequestStatus status,
-  ) async {
-    await _db
-        .collection('serviceRequests')
-        .doc(requestId)
-        .update({'status': status.toString()});
-  }
+
 
   // Reviews and Ratings
   Future<void> addReview({
@@ -105,7 +98,8 @@ class FirestoreService{
       double currentRating = data['rating'] ?? 0.0;
 
       double newRating =
-          ((currentRating * currentReviewCount) + rating) / (currentReviewCount + 1);
+          ((currentRating * currentReviewCount) + rating) /
+              (currentReviewCount + 1);
 
       transaction.update(serviceRef, {
         'rating': newRating,
@@ -113,33 +107,24 @@ class FirestoreService{
       });
     });
   }
-  Stream<List<ReviewModel>> getServiceReviews(String serviceId) {
-    // Implement the logic to fetch reviews from Firestore
-    // For example:
-    return FirebaseFirestore.instance
-        .collection('reviews')
-        .where('serviceId', isEqualTo: serviceId)
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-        .map((doc) => ReviewModel.fromFirestore(doc.data() as DocumentSnapshot<Object?>))
-        .toList());
+
+
+  Future<bool> userExists(String uid) async {
+    DocumentSnapshot doc = await _db.collection('users').doc(uid).get();
+    return doc.exists;
   }
 
-Future<bool> userExists(String uid) async {
-  DocumentSnapshot doc = await _db.collection('users').doc(uid).get();
-  return doc.exists;
-}
-
   Stream<UserModel> getUserStream(String userId) {
-  return _db.collection('users')
-      .doc(userId)
-      .snapshots()
-      .map((snapshot) => UserModel.fromFirestore(snapshot));
-}
+    return _db.collection('users')
+        .doc(userId)
+        .snapshots()
+        .map((snapshot) => UserModel.fromFirestore(snapshot));
+  }
 
- Future<void> deleteUser(String userId) async {
-  await _db.collection('users').doc(userId).delete();
-}
+  Future<void> deleteUser(String userId) async {
+    await _db.collection('users').doc(userId).delete();
+  }
+
 
   Future<Map<String, dynamic>> searchServices(String query) async {
     try {
@@ -160,13 +145,15 @@ Future<bool> userExists(String uid) async {
           .limit(4)
           .get();
 
-      Map<String, dynamic> mainCategory= {};
+      Map<String, dynamic> mainCategory = {};
       if (mainCategorySnapshot.docs.isNotEmpty) {
         final doc = mainCategorySnapshot.docs.first;
         final availableCount = await _getAvailableServicesCount(doc.id);
+        log('Main Category - Name: ${doc.get(
+            'name')}, Available Count: $availableCount'); // Debug log
         mainCategory = {
           'name': doc.get('name'),
-          'image': doc.get('image'),
+          'imageUrl': doc.get('imageUrl'),
           'availableCount': availableCount,
         };
       }
@@ -174,9 +161,11 @@ Future<bool> userExists(String uid) async {
       final otherCategories = await Future.wait(
         otherCategoriesSnapshot.docs.map((doc) async {
           final availableCount = await _getAvailableServicesCount(doc.id);
+          log('Other Category - Name: ${doc.get(
+              'name')}, Available Count: $availableCount'); // Debug log
           return {
             'name': doc.get('name'),
-            'image': doc.get('image'),
+            'imageUrl': doc.get('imageUrl'),
             'availableCount': availableCount,
           };
         }),
@@ -194,7 +183,7 @@ Future<bool> userExists(String uid) async {
   Future<int?> _getAvailableServicesCount(String categoryId) async {
     final snapshot = await _db
         .collection('services')
-        .where('categoryId', isEqualTo: categoryId)
+        .where('category.id', isEqualTo: categoryId)
         .where('isActive', isEqualTo: true)
         .count()
         .get();
@@ -209,9 +198,10 @@ Future<bool> userExists(String uid) async {
         .where('title', isGreaterThanOrEqualTo: query)
         .where('title', isLessThanOrEqualTo: query + '\uf8ff')
         .snapshots()
-        .map((snapshot) => snapshot.docs
-        .map((doc) => ServiceModel.fromFirestore(doc))
-        .toList());
+        .map((snapshot) =>
+        snapshot.docs
+            .map((doc) => ServiceModel.fromFirestore(doc))
+            .toList());
   }
 
   Stream<List<ServiceModel>> getTopRatedServicesStream() {
@@ -236,19 +226,102 @@ Future<bool> userExists(String uid) async {
     });
   }
 
- Stream<List<ServiceModel>> getServices({String? providerId}) {
-  Query query = _db.collection('services');
+  Stream<List<ServiceModel>> getServices({String? providerId}) {
+    Query query = _db.collection('services');
 
-  if (providerId != null) {
-    query = query.where('providerId', isEqualTo: providerId);
+    if (providerId != null) {
+      query = query.where('providerId', isEqualTo: providerId);
+    }
+
+    return query.snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) => ServiceModel.fromFirestore(doc))
+          .toList();
+    });
   }
 
-  return query.snapshots().map((snapshot) {
-    return snapshot.docs.map((doc) => ServiceModel.fromFirestore(doc)).toList();
+  Future<void> updateService(ServiceModel updatedService) async {
+    await _db.collection('services').doc(updatedService.id).update(
+        updatedService.toMap());
+  }
+
+  Future<UserModel?> getServiceProviderById(String providerId) async {
+    DocumentSnapshot doc = await _db.collection('users').doc(providerId).get();
+    if (doc.exists) {
+      return UserModel.fromFirestore(doc);
+    } else {
+      return null;
+    }
+  }
+
+  Future<ServiceModel?> getServiceById(String serviceId) async {
+    DocumentSnapshot doc = await _db.collection('services')
+        .doc(serviceId)
+        .get();
+    if (doc.exists) {
+      return ServiceModel.fromFirestore(doc);
+    } else {
+      return null;
+    }
+  }
+
+  static Future<String?> getUserName(String userId) async {
+    DocumentSnapshot doc = await FirebaseFirestore.instance.collection('users')
+        .doc(userId)
+        .get();
+    if (doc.exists) {
+      return doc['name'] as String?;
+    } else {
+      return null;
+    }
+  }
+
+  Future<void> updateUserProfile({
+    required String userId,
+    required String name,
+    required String email,
+    required String photoUrl,
+  }) async {
+    await _db.collection('users').doc(userId).update({
+      'name': name,
+      'email': email,
+      'photoUrl': photoUrl,
+    });
+  }
+
+  Future<void> updateRequestStatus(String id, RequestStatus status, {required bool isPaid, required DateTime? completedAt}) async {
+  await _db.collection('serviceRequests').doc(id).update({
+    'status': status.toString(),
+    'isPaid': isPaid,
+    'completedAt': completedAt,
   });
 }
 
-  Future<void> updateService(ServiceModel updatedService) async {
-    await _db.collection('services').doc(updatedService.id).update(updatedService.toMap());
+  Future<String?> getServiceName(String serviceId) async {
+  try {
+    DocumentSnapshot doc = await _db.collection('services').doc(serviceId).get();
+    if (doc.exists) {
+      return doc['name'] as String?;
+    } else {
+      return null;
+    }
+  } catch (e) {
+    log('Error getting service name: $e');
+    return null;
   }
+}
+
+  Future<String?> getClientNamebyID(String clientId) async {
+  try {
+    DocumentSnapshot doc = await _db.collection('users').doc(clientId).get();
+    if (doc.exists) {
+      return doc['name'] as String?;
+    } else {
+      return null;
+    }
+  } catch (e) {
+    log('Error getting client name: $e');
+    return null;
+  }
+}
+
 }

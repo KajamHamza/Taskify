@@ -4,7 +4,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../../../services/location_service.dart';
 
-
 class LocationPicker extends StatefulWidget {
   final GeoPoint? initialLocation;
   final Function(GeoPoint) onLocationSelected;
@@ -47,7 +46,7 @@ class _LocationPickerState extends State<LocationPicker> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString())),
+          SnackBar(content: Text('Failed to get location: ${e.toString()}')),
         );
       }
     } finally {
@@ -64,38 +63,68 @@ class _LocationPickerState extends State<LocationPicker> {
       children: [
         Text(
           'Select Location',
-          style: Theme.of(context).textTheme.titleMedium,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
         ),
         const SizedBox(height: 16),
-        SizedBox(
+        Container(
           height: 200,
-          child: _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: GoogleMap(
-                    initialCameraPosition: CameraPosition(
-                      target: _selectedLocation ?? const LatLng(0, 0),
-                      zoom: 15,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 6,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Stack(
+              children: [
+                GoogleMap(
+                  initialCameraPosition: CameraPosition(
+                    target: _selectedLocation ?? const LatLng(0, 0),
+                    zoom: 15,
+                  ),
+                  onMapCreated: (controller) => _mapController = controller,
+                  markers: _selectedLocation != null
+                      ? {
+                    Marker(
+                      markerId: const MarkerId('selected'),
+                      position: _selectedLocation!,
                     ),
-                    onMapCreated: (controller) => _mapController = controller,
-                    markers: _selectedLocation != null
-                        ? {
-                            Marker(
-                              markerId: const MarkerId('selected'),
-                              position: _selectedLocation!,
-                            ),
-                          }
-                        : {},
-                    onTap: (location) {
-                      setState(() => _selectedLocation = location);
-                      widget.onLocationSelected(GeoPoint(
-                        location.latitude,
-                        location.longitude,
-                      ));
-                    },
+                  }
+                      : {},
+                  onTap: (location) {
+                    setState(() => _selectedLocation = location);
+                    widget.onLocationSelected(GeoPoint(
+                      location.latitude,
+                      location.longitude,
+                    ));
+                  },
+                ),
+                if (_isLoading)
+                  const Center(child: CircularProgressIndicator()),
+                Positioned(
+                  bottom: 16,
+                  right: 16,
+                  child: FloatingActionButton(
+                    onPressed: _getCurrentLocation,
+                    backgroundColor: Colors.blue.shade100,
+                    child: Icon(
+                      Icons.my_location,
+                      color: Colors.blue.shade900,
+                    ),
                   ),
                 ),
+              ],
+            ),
+          ),
         ),
       ],
     );

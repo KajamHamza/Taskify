@@ -24,22 +24,22 @@ class PopularCategories extends StatelessWidget {
             CategoryCard(
               title: 'Car Driver',
               image: 'lib/assets/images/image1.jpg',
-              route: '/services/cleaning',
+              route: '/comingSoon',
             ),
             CategoryCard(
               title: 'Personal Teacher',
               image: 'lib/assets/images/image2.jpg',
-              route: '/services/moving',
+              route: '/comingSoon',
             ),
             CategoryCard(
               title: 'Cleaning Service',
               image: 'lib/assets/images/image3.jpg',
-              route: '/services/painting',
+              route: '/comingSoon',
             ),
             CategoryCard(
               title: 'Help Desk',
               image: 'lib/assets/images/promo.jpg',
-              route: '/services/electrical',
+              route: '/comingSoon',
             ),
           ],
         ),

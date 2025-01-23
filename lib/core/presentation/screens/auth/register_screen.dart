@@ -1,6 +1,6 @@
-import 'package:Taskify/core/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import '../../../models/user_model.dart';
+import '../../../services/auth_service.dart';
 import '../../../utils/validators.dart';
 import '../../widgets/custom_text_field.dart';
 
@@ -80,40 +80,47 @@ class _RegisterScreenState extends State<RegisterScreen> {
               }
               return null;
             },
-            prefix: const Icon(Icons.person_outline),
+            prefix: const Icon(Icons.person_outline, color: Colors.grey),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           CustomTextField(
             label: 'Email',
             hint: 'Enter your email',
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
             validator: Validators.validateEmail,
-            prefix: const Icon(Icons.email_outlined),
+            prefix: const Icon(Icons.email_outlined, color: Colors.grey),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           CustomTextField(
             label: 'Password',
             hint: 'Enter your password',
             controller: _passwordController,
             obscureText: true,
             validator: Validators.validatePassword,
-            prefix: const Icon(Icons.lock_outlined),
+            prefix: const Icon(Icons.lock_outlined, color: Colors.grey),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           CustomTextField(
             label: 'Confirm Password',
             hint: 'Confirm your password',
             controller: _confirmPasswordController,
             obscureText: true,
             validator: _validateConfirmPassword,
-            prefix: const Icon(Icons.lock_outlined),
+            prefix: const Icon(Icons.lock_outlined, color: Colors.grey),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 32),
           SizedBox(
             width: double.infinity,
-            child: FilledButton(
+            child: ElevatedButton(
               onPressed: _isLoading ? null : _handleRegister,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF0080FF),
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
               child: _isLoading
                   ? const SizedBox(
                 height: 20,
@@ -123,7 +130,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 ),
               )
-                  : const Text('Register'),
+                  : const Text(
+                'Register',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ),
         ],

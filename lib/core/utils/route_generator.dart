@@ -3,8 +3,13 @@ import 'package:Taskify/core/presentation/screens/chat/chat_screen.dart';
 import 'package:Taskify/core/presentation/screens/client/requests/client_requests_screen.dart';
 import 'package:Taskify/core/presentation/screens/notifications/notifications_screen.dart';
 import 'package:flutter/material.dart';
+import '../models/service_model.dart';
+import '../models/user_model.dart';
+import '../presentation/screens/client/Coming_soon_page.dart';
 import '../presentation/screens/client/home/client_home_screen.dart';
 import '../presentation/screens/client/map/services_map_screen.dart';
+import '../presentation/screens/client/profile/edit_profile_screen.dart';
+import '../presentation/screens/client/service_details/service_details_screen.dart';
 import '../presentation/screens/onboarding/splash_screen.dart';
 import '../presentation/screens/onboarding/onboarding_screen.dart';
 import '../presentation/screens/auth/auth_screen.dart';
@@ -32,8 +37,14 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const ChatListScreen());
       case '/notifications':
         return MaterialPageRoute(builder: (_) => const NotificationsScreen());
-      case '/client/request':
+      case '/client/requests':
         return MaterialPageRoute(builder: (_) => ClientRequestsScreen());
+      case '/service-details':
+        return MaterialPageRoute(builder: (_) => ServiceDetailsScreen( service: settings.arguments as ServiceModel));
+      case '/editProfile':
+        return MaterialPageRoute(builder: (_) => EditProfilePage(user: settings.arguments as UserModel));
+      case '/comingSoon':
+        return MaterialPageRoute(builder: (_) => const ComingSoonPage());
 
       default:
         return MaterialPageRoute(

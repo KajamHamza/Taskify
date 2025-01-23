@@ -41,7 +41,7 @@ class PromoCard extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () => Navigator.pushNamed(context, '/services/promo'),
+              onPressed: () => Navigator.pushNamed(context, '/comingSoon'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
                 foregroundColor: Colors.blue,

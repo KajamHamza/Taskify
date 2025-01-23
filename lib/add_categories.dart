@@ -11,9 +11,9 @@ Future<void> main() async {
 
   // List of categories to add
   List<CategoryModel> categoryList = [
-    CategoryModel(id: '1', name: 'Driver', image: 'lib/assets/images/image1.jpg'),
-    CategoryModel(id: '2', name: 'Teacher', image: 'lib/assets/images/image2.jpg'),
-    CategoryModel(id: '3', name: 'Cleaner', image: 'lib/assets/images/image3.jpg'),
+    CategoryModel(id: '1', name: 'Driver', imageUrl: 'lib/assets/images/image1.jpg'),
+    CategoryModel(id: '2', name: 'Teacher', imageUrl: 'lib/assets/images/image2.jpg'),
+    CategoryModel(id: '3', name: 'Cleaner', imageUrl: 'lib/assets/images/image3.jpg'),
   ];
 
   // Add each category to Firestore

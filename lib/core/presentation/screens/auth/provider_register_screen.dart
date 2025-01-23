@@ -52,7 +52,7 @@ class _ProviderRegisterScreenState extends State<ProviderRegisterScreen> {
     if (_formKey.currentState?.validate() ?? false) {
       setState(() => _isLoading = true);
       try {
-       final authService = AuthService();
+        final authService = AuthService();
         final providerService = ProviderService();
 
         final userCredential = await authService.signUpWithEmail(
@@ -91,7 +91,7 @@ class _ProviderRegisterScreenState extends State<ProviderRegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Service Provider Registration'),
+        elevation: 0,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -104,14 +104,17 @@ class _ProviderRegisterScreenState extends State<ProviderRegisterScreen> {
                 'Start Your Business Journey',
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
+                  color: Color(0xFF0080FF),
                 ),
+                textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 16),
               Text(
                 'Create your service provider account',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   color: Colors.grey[600],
                 ),
+                textAlign: TextAlign.center,
               ),
               const SizedBox(height: 32),
               CustomTextField(
@@ -124,67 +127,85 @@ class _ProviderRegisterScreenState extends State<ProviderRegisterScreen> {
                   }
                   return null;
                 },
-                prefix: const Icon(Icons.business_outlined),
+                prefix: const Icon(Icons.business_outlined, color: Colors.grey),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
               CustomTextField(
                 label: 'Email',
                 hint: 'Enter your email',
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 validator: Validators.validateEmail,
-                prefix: const Icon(Icons.email_outlined),
+                prefix: const Icon(Icons.email_outlined, color: Colors.grey),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
               CustomTextField(
                 label: 'Phone Number',
                 hint: 'Enter your phone number',
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
                 validator: Validators.validatePhone,
-                prefix: const Icon(Icons.phone_outlined),
+                prefix: const Icon(Icons.phone_outlined, color: Colors.grey),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
               CustomTextField(
                 label: 'Password',
                 hint: 'Enter your password',
                 controller: _passwordController,
                 obscureText: true,
                 validator: Validators.validatePassword,
-                prefix: const Icon(Icons.lock_outlined),
+                prefix: const Icon(Icons.lock_outlined, color: Colors.grey),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
               CustomTextField(
                 label: 'Confirm Password',
                 hint: 'Confirm your password',
                 controller: _confirmPasswordController,
                 obscureText: true,
                 validator: _validateConfirmPassword,
-                prefix: const Icon(Icons.lock_outlined),
+                prefix: const Icon(Icons.lock_outlined, color: Colors.grey),
               ),
               const SizedBox(height: 24),
-              CheckboxListTile(
-                value: _acceptedTerms,
-                onChanged: (value) {
-                  setState(() => _acceptedTerms = value ?? false);
-                },
-                title: const Text('I accept the terms and conditions'),
-                controlAffinity: ListTileControlAffinity.leading,
-                contentPadding: EdgeInsets.zero,
+              Row(
+                children: [
+                  Checkbox(
+                    value: _acceptedTerms,
+                    onChanged: (value) {
+                      setState(() => _acceptedTerms = value ?? false);
+                    },
+                    activeColor: Color(0xFF0080FF),
+                  ),
+                  Expanded(
+                    child: Text(
+                      'I accept the terms and conditions',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 24),
-              FilledButton(
+              const SizedBox(height: 32),
+              ElevatedButton(
                 onPressed: _isLoading ? null : _handleRegister,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF0080FF),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
                 child: _isLoading
                     ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                        ),
-                      )
-                    : const Text('Continue'),
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                )
+                    : const Text(
+                  'Continue',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
               ),
             ],
           ),

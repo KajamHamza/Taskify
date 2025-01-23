@@ -120,53 +120,39 @@ class _LoginScreenState extends State<LoginScreen> {
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
             validator: Validators.validateEmail,
-            prefix: const Icon(Icons.email_outlined),
+            prefix: const Icon(Icons.email_outlined, color: Colors.grey),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           CustomTextField(
             label: 'Password',
             hint: 'Enter your password',
             controller: _passwordController,
             obscureText: true,
             validator: Validators.validatePassword,
-            prefix: const Icon(Icons.lock_outlined),
+            prefix: const Icon(Icons.lock_outlined, color: Colors.grey),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
           Align(
             alignment: Alignment.centerRight,
             child: TextButton(
-              onPressed: () async {
-                final email = _emailController.text.trim();
-                if (email.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Please enter your email')),
-                  );
-                  return;
-                }
-                try {
-                  await _authService.resetPassword(email);
-                  if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Password reset email sent')),
-                    );
-                  }
-                } catch (e) {
-                  if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(e.toString())),
-                    );
-                  }
-                }
-              },
-              child: const Text('Forgot Password?'),
+              onPressed: _handlePasswordReset,
+              child: const Text(
+                'Forgot Password?',
+                style: TextStyle(color: Color(0xFF0080FF)),
+              ),
             ),
           ),
+          const SizedBox(height: 24),
           SizedBox(
             width: double.infinity,
-            child: FilledButton(
+            child: ElevatedButton(
               onPressed: _isLoading ? null : _handleLogin,
-              style: FilledButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 14), // Add padding here
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF0080FF),
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
               ),
               child: _isLoading
                   ? const SizedBox(
@@ -177,26 +163,34 @@ class _LoginScreenState extends State<LoginScreen> {
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 ),
               )
-                  : const Text('Login'),
+                  : const Text(
+                'Login',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 32),
           Row(
             children: [
-              const Expanded(child: Divider()),
+              const Expanded(child: Divider(color: Colors.grey)),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
                   'OR',
-                  style: Theme.of(context).textTheme.bodySmall,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Colors.grey,
+                  ),
                 ),
               ),
-              const Expanded(child: Divider()),
+              const Expanded(child: Divider(color: Colors.grey)),
             ],
           ),
           const SizedBox(height: 24),
           SizedBox(
-            width: double.infinity, // Ensures the button takes the full width of its container
+            width: double.infinity,
             child: OutlinedButton.icon(
               onPressed: _isLoading ? null : _handleGoogleSignIn,
               icon: SvgPicture.asset(
@@ -206,7 +200,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               label: const Text(
                 'Continue with Google',
-                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   color: Colors.black87,
                   fontSize: 16,
@@ -215,9 +208,9 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 14),
-                side: BorderSide(color: Colors.grey.shade300), // Matches theme
+                side: BorderSide(color: Colors.grey.shade300),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+                  borderRadius: BorderRadius.circular(20),
                 ),
               ),
             ),
